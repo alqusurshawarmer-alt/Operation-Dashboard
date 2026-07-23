@@ -4620,23 +4620,24 @@ function recalc(){
   const key=`${state.currentYear}-${pad(state.currentMonth+1)}`;
 
   // Aggregate data across all outlets or just current outlet
-  let daysWithSales=0,mtdActual=0,mtdTx=0,mtdTaDine=0,totalComp=0,totalSos=0,sosCount=0;
+  let mtdActual=0,mtdTx=0,mtdTaDine=0,totalComp=0,totalSos=0,sosCount=0;
   let totalRefundSar=0,totalRefundTx=0,totalVoidSar=0,totalVoidTx=0;
 
   const outletList = isAllOutlets ? state.outlets : [{id:getOutletId()}];
   const dayHasData = {};
 
-  // Track which outlets have any real data — only those count toward target
+  // Per-outlet days and target — match getAreaData logic exactly
+  let mtdTarget = 0;
   const outletsWithData = new Set();
 
   for(const outlet of outletList){
     const store = getOutletStore(outlet.id);
     const data = store.dailyData?.[key]||{};
-    let outletHasData=false;
+    let outletDays=0;
     for(let d=1;d<=days;d++){
       if(data[d]&&(data[d].actual||0)>0){
         dayHasData[d]=true;
-        outletHasData=true;
+        outletDays++;
         mtdActual+=data[d].actual||0;
         mtdTx+=data[d].tx||0;
         mtdTaDine+=data[d].tadine||0;
@@ -4648,28 +4649,28 @@ function recalc(){
         if(data[d].sos){totalSos+=data[d].sos;sosCount++;}
       }
     }
-    if(outletHasData) outletsWithData.add(outlet.id);
+    if(outletDays>0){
+      outletsWithData.add(outlet.id);
+      // Each outlet contributes its own target × its own days — same as getAreaData
+      const oTarget = getMonthTarget(state.currentYear,state.currentMonth,outlet.id,false);
+      mtdTarget += oTarget * outletDays;
+    }
   }
-  daysWithSales = Object.keys(dayHasData).length;
+  const daysWithSales = Object.keys(dayHasData).length;
 
-  // Target: only sum outlets that have actual data entered (ignore phantom defaults)
-  // For all-outlets view: sum targets of outlets WITH data only
+  // Daily target display = sum of outlets with data (for KPI card)
   let target;
   if(isAllOutlets){
-    if(outletsWithData.size>0){
-      target = [...outletsWithData].reduce((s,oid)=>s+getMonthTarget(state.currentYear,state.currentMonth,oid,false),0);
-    } else {
-      // No data at all — show combined target of all outlets anyway
-      target = state.outlets.reduce((s,o)=>s+getMonthTarget(state.currentYear,state.currentMonth,o.id,false),0);
-    }
-    state.dailyTarget = target; // keep as combined daily total for display
+    target = outletsWithData.size>0
+      ? [...outletsWithData].reduce((s,oid)=>s+getMonthTarget(state.currentYear,state.currentMonth,oid,false),0)
+      : state.outlets.reduce((s,o)=>s+getMonthTarget(state.currentYear,state.currentMonth,o.id,false),0);
+    state.dailyTarget = target;
   } else {
     target = getMonthTarget();
     state.dailyTarget = target;
+    // Single outlet: MTD target = daily target × own days with sales
+    mtdTarget = target * daysWithSales;
   }
-
-  // MTD Target = daily target × days with sales
-  const mtdTarget = target * daysWithSales;
   const avc=mtdTx?'SAR '+(mtdActual/mtdTx).toFixed(0):'—';
   const iptBase=mtdTaDine||mtdTx;
   const ipt=iptBase?((totalComp/iptBase)*1000).toFixed(1):'—';
