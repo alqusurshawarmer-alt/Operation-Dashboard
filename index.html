@@ -9362,11 +9362,13 @@ const VAULT_STORE_MAP = (()=>{
 // ── State ─────────────────────────────────────────────────────────────────
 function getVaultStore(){
   if(!state.vaultData) state.vaultData=[];
-  // Auto-clean entries older than 10 days
-  const cutoff = Date.now() - (10*24*60*60*1000);
-  const before = state.vaultData.length;
-  state.vaultData = state.vaultData.filter(e=> new Date(e.savedAt).getTime() > cutoff);
-  if(state.vaultData.length !== before) saveVaultToFirebase();
+  // Auto-clean entries older than 10 days — use start of day to avoid timezone cutoff issues
+  const cleanCutoff=new Date();
+  cleanCutoff.setDate(cleanCutoff.getDate()-10);
+  cleanCutoff.setHours(0,0,0,0);
+  const before=state.vaultData.length;
+  state.vaultData=state.vaultData.filter(e=>new Date(e.savedAt).getTime()>=cleanCutoff.getTime());
+  if(state.vaultData.length!==before) saveVaultToFirebase();
   return state.vaultData;
 }
 
@@ -9553,9 +9555,18 @@ function renderVaultPage(){
   const search=(document.getElementById('vaultSearch')||{}).value?.toLowerCase()||'';
   const sf=isAdmin?((document.getElementById('vaultStoreFilter')||{}).value||'all'):'single';
   const af=(document.getElementById('vaultAggFilter')||{}).value||'all';
-  const df=parseInt((document.getElementById('vaultDateFilter')||{}).value)||0;
+  const dfVal=(document.getElementById('vaultDateFilter')||{}).value||'all';
+  const df=dfVal==='all'?0:parseInt(dfVal)||0;
 
-  const cutoff = df ? Date.now()-(df*24*60*60*1000) : 0;
+  // For "Today" use start of today (midnight) not 24h ago — avoids timezone cutoff issues
+  let cutoff=0;
+  if(df===1){
+    const startOfToday=new Date();
+    startOfToday.setHours(0,0,0,0);
+    cutoff=startOfToday.getTime();
+  } else if(df>1){
+    cutoff=Date.now()-(df*24*60*60*1000);
+  }
 
   let rows=entries.filter(e=>{
     // Staff: only their own store
