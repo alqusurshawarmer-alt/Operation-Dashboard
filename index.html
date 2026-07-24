@@ -10698,11 +10698,9 @@ function getConfigOutlets(){
 
 // ── Rebuild PREDEFINED_OUTLETS from config at runtime ─────────────────────
 function reloadOutlets(){
-  const outlets=getConfigOutlets();
-  // Overwrite the global array in place
-  PREDEFINED_OUTLETS.length=0;
-  outlets.forEach(o=>PREDEFINED_OUTLETS.push(o));
-  // Rebuild VAULT_STORE_MAP
+  // NEVER clear or replace PREDEFINED_OUTLETS — they are hardcoded for Khobar
+  // Just rebuild VAULT_STORE_MAP from the hardcoded outlets
+  const outlets = PREDEFINED_OUTLETS;
   Object.keys(VAULT_STORE_MAP).forEach(k=>delete VAULT_STORE_MAP[k]);
   outlets.forEach(o=>{
     const num=String(o.number);
@@ -10723,15 +10721,7 @@ function reloadOutlets(){
 
 // ── Check if setup needed ──────────────────────────────────────────────────
 function checkSetupRequired(){
-  // Never show setup wizard for staff or superadmin
-  if(isStaff(state.currentUser)) return false;
-  if(isSuperAdmin(state.currentUser)) return false;
-  const cfg=getAreaConfig();
-  if(!cfg.outlets||!cfg.outlets.length||!cfg.areaName){
-    // Show setup wizard
-    setTimeout(()=>{ document.getElementById('setupWizardModal').classList.add('open'); },500);
-    return true;
-  }
+  // Outlets are hardcoded — setup wizard never needed
   reloadOutlets();
   return false;
 }
@@ -10751,8 +10741,8 @@ async function loadConfigFromFirebase(){
         ...fbCfg,
         // Keep local ocrWorkerUrl if it exists and Firebase doesn't have one
         ocrWorkerUrl: fbCfg.ocrWorkerUrl||localCfg.ocrWorkerUrl||'',
-        // Keep local outlets if Firebase has none
-        outlets: (fbCfg.outlets&&fbCfg.outlets.length)?fbCfg.outlets:(localCfg.outlets||[]),
+        // NEVER load outlets from Firebase areaConfig — they are hardcoded in PREDEFINED_OUTLETS
+        outlets: PREDEFINED_OUTLETS,
         areaName: fbCfg.areaName||localCfg.areaName||'',
         adminName: fbCfg.adminName||localCfg.adminName||''
       };
