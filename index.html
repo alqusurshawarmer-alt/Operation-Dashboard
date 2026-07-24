@@ -3324,7 +3324,7 @@ function doSignIn(){
     else u.role='staff';
   }
   state.currentUser=u; state.loggedIn=true;
-  document.getElementById('authScreen').style.display='none';
+  state.outlets = PREDEFINED_OUTLETS;
   document.getElementById('mainApp').style.cssText='display:flex;flex:1;flex-direction:column';
   var _sb=document.getElementById('mainSidebar');
   var _hmb=document.getElementById('mobileMenuBtn');
@@ -12598,6 +12598,8 @@ async function onLoginSuccess(u){
   }
   console.log('LOGIN: final role=',u.role);
   state.currentUser=u; state.loggedIn=true;
+  // Always set outlets to hardcoded Khobar outlets immediately — before any Firebase load
+  state.outlets = PREDEFINED_OUTLETS;
 
   // Set selectedOutlet
   if(isAdminLevel(u)){
