@@ -12270,7 +12270,8 @@ async function fbLoadAllData(){
   showLoading('Loading your data...');
   try{
     const outSnap=await db.ref('outlets').once('value');
-    if(outSnap.exists()){const raw=outSnap.val();state.outlets=Array.isArray(raw)?raw:Object.values(raw);}
+    // Always use hardcoded Khobar outlets — ignore whatever is in Firebase outlets node
+    state.outlets = PREDEFINED_OUTLETS;
 
     const usrSnap=await db.ref('users').once('value');
     if(usrSnap.exists()){const raw=usrSnap.val();state.users=Array.isArray(raw)?raw:Object.values(raw);normaliseUserRoles();}
@@ -12529,8 +12530,9 @@ function setupRealtimeListeners(){
 
   const outRef=db.ref('outlets');
   const oh=outRef.on('value',snap=>{
-    if(!state.loggedIn||!snap.exists())return;
-    const raw=snap.val();state.outlets=Array.isArray(raw)?raw:Object.values(raw);
+    if(!state.loggedIn)return;
+    // Always use hardcoded Khobar outlets — ignore Firebase outlets node
+    state.outlets = PREDEFINED_OUTLETS;
     renderOutlets();buildOutletDropdown();buildCogsOutletSelect();
   });
   _rtListeners.push(()=>outRef.off('value',oh));
