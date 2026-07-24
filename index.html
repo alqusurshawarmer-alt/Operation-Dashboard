@@ -5,30 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shawarmer | Operations Dashboard</title>
 <script>
-// Pre-seed Pradeep Area config if not already set
-(function(){
-  try{
-    var existing=JSON.parse(localStorage.getItem('areaConfig')||'{}');
-    if(!existing.areaName||existing.areaName!=='Pradeep Area'){
-      var defaultCfg={
-        areaName:'Pradeep Area',
-        adminName:'Pradeep',
-        outlets:[
-          {id:26,number:'26',name:'AlRawdah',location:'Khaled Ibn AlWalid St.'},
-          {id:66,number:'66',name:'AlRabie',location:'King Abdulaziz Rd.'},
-          {id:19,number:'19',name:'AlMuruj',location:'King Abdul Aziz Rd.'},
-          {id:52,number:'52',name:'Ishbiliya',location:'Allmam Abdullah Ibn Saud Rd.'},
-          {id:12,number:'12',name:'AlIzdihar',location:'Allmam Saud Ibn Abdulaziz Rd Exit 9'},
-          {id:7,number:'07',name:'AlQuds',location:'King Abdullah Rd. Exit 10'},
-          {id:18,number:'18',name:'Granada Mall',location:'Eastern Ring Rd.'}
-        ],
-        setupDate:new Date().toISOString(),
-        version:'1.0'
-      };
-      localStorage.setItem('areaConfig',JSON.stringify(defaultCfg));
-    }
-  }catch(e){}
-})();
 // Update title with area name from config
 try{
   const cfg=JSON.parse(localStorage.getItem('areaConfig')||'{}');
@@ -504,13 +480,11 @@ body{font-family:'Tajawal','Cairo',sans-serif;background:var(--bg);color:var(--t
         <div class="form-group"><label>Outlet *</label>
           <select id="regOutlet" style="width:100%;padding:.7rem 1rem;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:.9rem;outline:none;font-family:'Tajawal',sans-serif">
             <option value="">-- Select Your Outlet --</option>
-          <option value="26">26 - AlRawdah (Khaled Ibn AlWalid St.)</option>
-          <option value="66">66 - AlRabie (King Abdulaziz Rd.)</option>
-          <option value="19">19 - AlMuruj (King Abdul Aziz Rd.)</option>
-          <option value="52">52 - Ishbiliya (Allmam Abdullah Ibn Saud Rd.)</option>
-          <option value="12">12 - AlIzdihar (Allmam Saud Ibn Abdulaziz Rd Exit 9)</option>
-          <option value="7">07 - AlQuds (King Abdullah Rd. Exit 10)</option>
-          <option value="18">18 - Granada Mall (Eastern Ring Rd.)</option>
+          <option value="233">233 - Al Qusur (Prince Mohammed Bin Fahad Road)</option>
+          <option value="260">260 - Ras Tanura (King Abdulaziz Rd.)</option>
+          <option value="51">51 - AlRakah AlShamaliyah (King Fahed Rd.)</option>
+          <option value="56">56 - AlAzizia (King Khaled Rd.)</option>
+          <option value="82">82 - AlAqrabia (Prince Faisal Bin Fahed Rd.)</option>
           </select>
         </div>
         <button class="btn btn-primary" style="width:100%;margin-top:.5rem" onclick="doRegister()">Create Profile</button>
@@ -1590,12 +1564,12 @@ body{font-family:'Tajawal','Cairo',sans-serif;background:var(--bg);color:var(--t
               <div style="font-size:.65rem;color:var(--text3);margin-top:.15rem">All outlets</div>
             </div>
             <div style="background:#dbeafe;border:1.5px solid #2563eb;border-radius:8px;padding:.65rem .85rem;text-align:center">
-              <div style="font-size:.68rem;color:#1e40af;font-weight:700;margin-bottom:.2rem;text-transform:uppercase">Area Total</div>
+              <div style="font-size:.68rem;color:#1e40af;font-weight:700;margin-bottom:.2rem;text-transform:uppercase">Rastanura</div>
               <div style="font-weight:900;font-size:.9rem;color:#1e40af" id="dsm-kpi-ras">—</div>
               <div style="font-size:.65rem;color:#3b82f6;margin-top:.15rem">Outlet 260</div>
             </div>
             <div style="background:#dcfce7;border:1.5px solid #16a34a;border-radius:8px;padding:.65rem .85rem;text-align:center">
-              <div style="font-size:.68rem;color:#166534;font-weight:700;margin-bottom:.2rem;text-transform:uppercase">Pradeep Area</div>
+              <div style="font-size:.68rem;color:#166534;font-weight:700;margin-bottom:.2rem;text-transform:uppercase">Khobar</div>
               <div style="font-weight:900;font-size:.9rem;color:#166534" id="dsm-kpi-khobar">—</div>
               <div style="font-size:.65rem;color:#16a34a;margin-top:.15rem">51 · 56 · 82 · 233</div>
             </div>
@@ -1603,8 +1577,8 @@ body{font-family:'Tajawal','Cairo',sans-serif;background:var(--bg);color:var(--t
 
           <!-- Divider -->
           <div style="border-top:2px solid var(--border);margin-bottom:1rem;padding-top:.75rem">
-            <div style="font-weight:800;font-size:.82rem;color:#166534;margin-bottom:.5rem">🪙 Physical Cash Count</div>
-            <div style="font-size:.75rem;color:var(--text2);margin-bottom:.75rem">Enter the number of notes/coins you physically counted — total must match area pending above</div>
+            <div style="font-weight:800;font-size:.82rem;color:#166534;margin-bottom:.5rem">🪙 Khobar Physical Cash Count</div>
+            <div style="font-size:.75rem;color:var(--text2);margin-bottom:.75rem">Enter the number of notes/coins you physically counted — total must match Khobar pending above</div>
           </div>
 
           <!-- Denomination input table -->
@@ -1648,13 +1622,11 @@ body{font-family:'Tajawal','Cairo',sans-serif;background:var(--bg);color:var(--t
             <div class="form-group"><label>Outlet *</label>
               <select id="cdOutlet" style="width:100%;padding:.7rem 1rem;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:.9rem;outline:none;font-family:'Tajawal',sans-serif">
                 <option value="">-- Select Outlet --</option>
-                <option value="26">26 - AlRawdah</option>
-                <option value="66">66 - AlRabie</option>
-                <option value="19">19 - AlMuruj</option>
-                <option value="52">52 - Ishbiliya</option>
-                <option value="12">12 - AlIzdihar</option>
-                <option value="7">07 - AlQuds</option>
-                <option value="18">18 - Granada Mall</option>
+                <option value="233">233 - Al Qusur</option>
+                <option value="260">260 - Ras Tanura</option>
+                <option value="51">51 - AlRakah AlShamaliyah</option>
+                <option value="56">56 - AlAzizia</option>
+                <option value="82">82 - AlAqrabia</option>
               </select>
             </div>
           </div>
@@ -3272,13 +3244,13 @@ body{font-family:'Tajawal','Cairo',sans-serif;background:var(--bg);color:var(--t
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 // Outlets loaded dynamically from Firebase config — do not hardcode
-const PREDEFINED_OUTLETS = (()=>{
-  try{
-    const saved = localStorage.getItem('areaConfig');
-    if(saved){ const cfg=JSON.parse(saved); if(cfg.outlets&&cfg.outlets.length) return cfg.outlets; }
-  }catch(e){}
-  return [];
-})();
+const PREDEFINED_OUTLETS = [
+  {id:233, number:'233', name:'Al Qusur'},
+  {id:260, number:'260', name:'Ras Tanura'},
+  {id:51,  number:'51',  name:'AlRakah AlShamaliyah'},
+  {id:56,  number:'56',  name:'AlAzizia'},
+  {id:82,  number:'82',  name:'AlAqrabia'}
+];
 const SUPER_ADMIN_ID   = '54122';
 const SUPER_ADMIN_CODE = 'SUPERADMIN2026';
 function isSuperAdmin(u){ var usr=u||state.currentUser; return !!(usr&&(usr.id===SUPER_ADMIN_ID||usr.role==='superadmin')); }
@@ -3289,7 +3261,7 @@ function isAdminLevel(u){ return isSuperAdmin(u)||isManager(u); }
 let state={
   loggedIn:false,currentUser:null,selectedOutlet:'all',
   users:[],
-  employees:[],outlets:[],
+  employees:[],outlets:PREDEFINED_OUTLETS,
   // Per-outlet data: state.outletData[outletId] = {dailyData, kpiData, cogsData, dailyTarget}
   outletData:{},
   dailyTarget:5000,
@@ -3352,7 +3324,7 @@ function doSignIn(){
     else u.role='staff';
   }
   state.currentUser=u; state.loggedIn=true;
-  document.getElementById('authScreen').style.display='none';
+  state.outlets = PREDEFINED_OUTLETS;
   document.getElementById('mainApp').style.cssText='display:flex;flex:1;flex-direction:column';
   var _sb=document.getElementById('mainSidebar');
   var _hmb=document.getElementById('mobileMenuBtn');
@@ -3821,8 +3793,8 @@ function renderCashOutletCards(){
 function SAR(v){ return 'SAR '+parseFloat(v||0).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 
 // ── Deposit Summary Modal ─────────────────────────────────────────────────────
-// Pradeep Area outlets: 26, 66, 19, 52, 12, 7, 18
-const RASTANURA_OUTLET_ID = null; // Not applicable for Pradeep Area
+// 260 = Ras Tanura; Khobar = 51, 56, 82, 233
+const RASTANURA_OUTLET_ID = 260;
 const DENOMINATIONS = [500, 200, 100, 50, 20, 10, 5, 1];
 let _dsmKhobarTarget = 0; // used by recalcDenom
 
@@ -3832,9 +3804,11 @@ function openDepositSummaryModal(){
   // Pending = pending + not-deposited (anything not yet banked)
   const pending = entries.filter(e => e.status === 'pending' || e.status === 'not-deposited');
 
-  const rasTotal    = 0; // Not used in Pradeep Area
-  const khobarTotal = pending.reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
-  const grandTotal  = khobarTotal;
+  const rasTotal    = pending.filter(e => +e.outletId === RASTANURA_OUTLET_ID)
+                             .reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
+  const khobarTotal = pending.filter(e => +e.outletId !== RASTANURA_OUTLET_ID)
+                             .reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
+  const grandTotal  = rasTotal + khobarTotal;
   _dsmKhobarTarget  = khobarTotal;
 
   const fmtSAR = v => 'SAR '+v.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -3850,7 +3824,7 @@ function openDepositSummaryModal(){
   if(mo&&yr){
     const mn=['','January','February','March','April','May','June','July','August','September','October','November','December'];
     document.getElementById('dsmSubtitle').textContent =
-      'Pending cash sales — '+mn[+mo]+' '+yr;
+      'Pending cash sales — '+mn[+mo]+' '+yr+' · Total = Rastanura + Khobar';
   }
 
   // Build denomination input rows — all start at 0
@@ -3901,14 +3875,14 @@ function recalcDenom(){
     status.style.background = 'rgba(22,163,74,.1)';
     status.style.color = '#166534';
     status.style.border = '1.5px solid #16a34a';
-    status.textContent = '✅ Matched — Physical cash equals area pending (' + fmtSAR(counted) + ')';
+    status.textContent = '✅ Matched — Physical cash equals Khobar pending (' + fmtSAR(counted) + ')';
   } else {
     status.style.display = '';
     status.style.background = 'rgba(220,38,38,.07)';
     status.style.color = '#dc2626';
     status.style.border = '1.5px solid #dc2626';
     const dir = diff > 0 ? 'OVER by ' : 'SHORT by ';
-    status.textContent = '⚠️ ' + dir + fmtSAR(absDiff) + ' vs area pending (' + fmtSAR(_dsmKhobarTarget) + ')';
+    status.textContent = '⚠️ ' + dir + fmtSAR(absDiff) + ' vs Khobar pending (' + fmtSAR(_dsmKhobarTarget) + ')';
   }
 }
 
@@ -9388,11 +9362,13 @@ const VAULT_STORE_MAP = (()=>{
 // ── State ─────────────────────────────────────────────────────────────────
 function getVaultStore(){
   if(!state.vaultData) state.vaultData=[];
-  // Auto-clean entries older than 10 days
-  const cutoff = Date.now() - (10*24*60*60*1000);
-  const before = state.vaultData.length;
-  state.vaultData = state.vaultData.filter(e=> new Date(e.savedAt).getTime() > cutoff);
-  if(state.vaultData.length !== before) saveVaultToFirebase();
+  // Auto-clean entries older than 10 days — use start of day to avoid timezone cutoff issues
+  const cleanCutoff=new Date();
+  cleanCutoff.setDate(cleanCutoff.getDate()-10);
+  cleanCutoff.setHours(0,0,0,0);
+  const before=state.vaultData.length;
+  state.vaultData=state.vaultData.filter(e=>new Date(e.savedAt).getTime()>=cleanCutoff.getTime());
+  if(state.vaultData.length!==before) saveVaultToFirebase();
   return state.vaultData;
 }
 
@@ -9579,9 +9555,18 @@ function renderVaultPage(){
   const search=(document.getElementById('vaultSearch')||{}).value?.toLowerCase()||'';
   const sf=isAdmin?((document.getElementById('vaultStoreFilter')||{}).value||'all'):'single';
   const af=(document.getElementById('vaultAggFilter')||{}).value||'all';
-  const df=parseInt((document.getElementById('vaultDateFilter')||{}).value)||0;
+  const dfVal=(document.getElementById('vaultDateFilter')||{}).value||'all';
+  const df=dfVal==='all'?0:parseInt(dfVal)||0;
 
-  const cutoff = df ? Date.now()-(df*24*60*60*1000) : 0;
+  // For "Today" use start of today (midnight) not 24h ago — avoids timezone cutoff issues
+  let cutoff=0;
+  if(df===1){
+    const startOfToday=new Date();
+    startOfToday.setHours(0,0,0,0);
+    cutoff=startOfToday.getTime();
+  } else if(df>1){
+    cutoff=Date.now()-(df*24*60*60*1000);
+  }
 
   let rows=entries.filter(e=>{
     // Staff: only their own store
@@ -10584,7 +10569,7 @@ function downloadDisputePdf(){
         ${r.feedback?`<div style="margin-top:12px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:10px 14px"><div style="font-size:10px;color:#16a34a;font-weight:700;text-transform:uppercase;margin-bottom:4px">Our Response</div><div style="font-size:13px;color:#1e293b">${r.feedback}</div></div>`:''}
       </div>
 
-      <div style="text-align:center;color:#94a3b8;font-size:10px;margin-top:8px">Order ${i+1} of ${_disputeData.length} | Generated by PulseOps Pradeep Area Dashboard</div>
+      <div style="text-align:center;color:#94a3b8;font-size:10px;margin-top:8px">Order ${i+1} of ${_disputeData.length} | Generated by PulseOps Khobar Dashboard</div>
     </div>`;
   }).join('\n');
 
@@ -10604,7 +10589,7 @@ function downloadDisputePdf(){
   <div style="page-break-after:always;padding:40px;font-family:Arial,sans-serif;max-width:800px;margin:0 auto">
     <div style="text-align:center;margin-bottom:30px">
       <div style="font-size:28px;font-weight:900;color:#8B1A2F">⚖️ Compensation Dispute Report</div>
-      <div style="color:#64748b;margin-top:6px">Pradeep Area · Generated: ${today}</div>
+      <div style="color:#64748b;margin-top:6px">Khobar Region · Generated: ${today}</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
       <div style="background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:20px;text-align:center">
@@ -10682,7 +10667,7 @@ function downloadDisputeExcel(){
   const csv=rows.map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,"''")+'"').join(',')).join('\n');
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='PradeepArea_Disputes_'+new Date().toLocaleDateString('en-GB').replace(/\//g,'-')+'.csv';
+  a.download='Khobar_Disputes_'+new Date().toLocaleDateString('en-GB').replace(/\//g,'-')+'.csv';
   a.click();
 }
 
@@ -12164,22 +12149,29 @@ function purgeCogsByAge(cogsData){
 function initFirebaseIntegration() {
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDMXIGM4ge5KFArT_AJFQ6U_tQ-ac5iwuo",
-  authDomain: "shawarmer-pradeep-area.firebaseapp.com",
-  projectId: "shawarmer-pradeep-area",
-  storageBucket: "shawarmer-pradeep-area.firebasestorage.app",
-  messagingSenderId: "26058223829",
-  appId: "1:26058223829:web:53120e81bec5dedb73b25c",
-  measurementId: "G-DZSWWYT02M",
-  databaseURL: "https://shawarmer-pradeep-area-default-rtdb.europe-west1.firebasedatabase.app"
+  apiKey: "AIzaSyB59RuWBBQV782D7vTZuFhCzUaBGWX45Co",
+  authDomain: "pulse-ops-khobar.firebaseapp.com",
+  databaseURL: "https://pulse-ops-khobar-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "pulse-ops-khobar",
+  storageBucket: "pulse-ops-khobar.firebasestorage.app",
+  messagingSenderId: "1074536616949",
+  appId: "1:1074536616949:web:f5630fce38e22a3148c6bc"
 };
 
-// Guard: only init once
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+// Force initialize with correct project — delete any stale apps first
+try{
+  firebase.apps.forEach(app=>{
+    if(app.options.projectId!=='pulse-ops-khobar') app.delete();
+  });
+}catch(e){}
+let _fbApp;
+if(firebase.apps.length&&firebase.apps[0].options.projectId==='pulse-ops-khobar'){
+  _fbApp=firebase.apps[0];
+} else {
+  _fbApp=firebase.initializeApp(firebaseConfig);
 }
-const auth = firebase.auth();
-const db   = firebase.database();
+const auth = firebase.auth(_fbApp);
+const db   = firebase.database(_fbApp);
 
 // Make auth & db globally accessible for all functions
 window._fbAuth = auth;
@@ -12286,7 +12278,8 @@ async function fbLoadAllData(){
   showLoading('Loading your data...');
   try{
     const outSnap=await db.ref('outlets').once('value');
-    if(outSnap.exists()){const raw=outSnap.val();state.outlets=Array.isArray(raw)?raw:Object.values(raw);}
+    // Always use hardcoded Khobar outlets — ignore whatever is in Firebase outlets node
+    state.outlets = PREDEFINED_OUTLETS;
 
     const usrSnap=await db.ref('users').once('value');
     if(usrSnap.exists()){const raw=usrSnap.val();state.users=Array.isArray(raw)?raw:Object.values(raw);normaliseUserRoles();}
@@ -12298,36 +12291,24 @@ async function fbLoadAllData(){
     const isAdmin=isAdminLevel(state.currentUser);
 
     if(isAdmin){
-      // Admin always sees ALL predefined outlets, regardless of whether data exists yet
-      PREDEFINED_OUTLETS.forEach(predef=>{
-        if(!state.outlets.find(o=>+o.id===predef.id)){
-          state.outlets.push(predef);
-        }
-      });
-      // Admin loads ALL outlet data
+      // Admin loads ALL predefined outlet data only
       const dataSnap=await db.ref('outletData').once('value');
       if(dataSnap.exists()){
         const raw=dataSnap.val();
-        Object.entries(raw).forEach(([oid,odata])=>{
-          const id=isNaN(oid)?oid:+oid;
-          if(!state.outletData[id])state.outletData[id]={dailyData:{},kpiData:[],cogsData:{},dailyTarget:5000};
-          state.outletData[id].dailyData  =odata.dailyData||{};
-          state.outletData[id].kpiData    =odata.kpiData?(Array.isArray(odata.kpiData)?odata.kpiData:Object.values(odata.kpiData)):[];
-          state.outletData[id].cogsData   =odata.cogsData||{};
-          // Auto-purge COGS entries older than 30 days on load
-          purgeCogsByAge(state.outletData[id].cogsData);
-          state.outletData[id].dailyTarget=odata.dailyTarget||5000;
-          state.outletData[id].monthlyTargets=odata.monthlyTargets||{};
-          if(odata.petty) loadPettyFromFirebase(id,odata);
-          // Ensure outlet exists in state.outlets
-          if(!state.outlets.find(o=>+o.id===id)){
-            const predef=PREDEFINED_OUTLETS.find(o=>o.id===id);
-            if(predef) state.outlets.push(predef);
-          }
+        // Only load data for our 5 hardcoded outlets — ignore any other outlet IDs in Firebase
+        PREDEFINED_OUTLETS.forEach(predef=>{
+          const oid=predef.id;
+          const odata=raw[oid]||raw[String(oid)]||{};
+          if(!state.outletData[oid])state.outletData[oid]={dailyData:{},kpiData:[],cogsData:{},dailyTarget:5000};
+          state.outletData[oid].dailyData     =odata.dailyData||{};
+          state.outletData[oid].kpiData       =odata.kpiData?(Array.isArray(odata.kpiData)?odata.kpiData:Object.values(odata.kpiData)):[];
+          state.outletData[oid].cogsData      =odata.cogsData||{};
+          purgeCogsByAge(state.outletData[oid].cogsData);
+          state.outletData[oid].dailyTarget   =odata.dailyTarget||5000;
+          state.outletData[oid].monthlyTargets=odata.monthlyTargets||{};
+          if(odata.petty) loadPettyFromFirebase(oid,odata);
         });
       }
-      // Persist the full outlet list to Firebase so it's consistent going forward
-      await db.ref('outlets').set(state.outlets);
       console.log('Admin loaded outletData for IDs:', Object.keys(state.outletData));
     } else {
       // Staff loads ONLY their assigned outlet data
@@ -12545,8 +12526,9 @@ function setupRealtimeListeners(){
 
   const outRef=db.ref('outlets');
   const oh=outRef.on('value',snap=>{
-    if(!state.loggedIn||!snap.exists())return;
-    const raw=snap.val();state.outlets=Array.isArray(raw)?raw:Object.values(raw);
+    if(!state.loggedIn)return;
+    // Always use hardcoded Khobar outlets — ignore Firebase outlets node
+    state.outlets = PREDEFINED_OUTLETS;
     renderOutlets();buildOutletDropdown();buildCogsOutletSelect();
   });
   _rtListeners.push(()=>outRef.off('value',oh));
@@ -12612,6 +12594,8 @@ async function onLoginSuccess(u){
   }
   console.log('LOGIN: final role=',u.role);
   state.currentUser=u; state.loggedIn=true;
+  // Always set outlets to hardcoded Khobar outlets immediately — before any Firebase load
+  state.outlets = PREDEFINED_OUTLETS;
 
   // Set selectedOutlet
   if(isAdminLevel(u)){
@@ -12882,7 +12866,7 @@ auth.onAuthStateChanged(async(fbUser)=>{
   }
 });
 
-console.log('🔥 Firebase connected — PulseOps Pradeep Area Dashboard');
+console.log('🔥 Firebase connected — PulseOps Dashboard');
 
 // Firebase override for saveAddSaleModal
 if(typeof db !== 'undefined'){
