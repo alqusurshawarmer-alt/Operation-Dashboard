@@ -3244,13 +3244,13 @@ body{font-family:'Tajawal','Cairo',sans-serif;background:var(--bg);color:var(--t
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 // Outlets loaded dynamically from Firebase config — do not hardcode
-const PREDEFINED_OUTLETS = (()=>{
-  try{
-    const saved = localStorage.getItem('areaConfig');
-    if(saved){ const cfg=JSON.parse(saved); if(cfg.outlets&&cfg.outlets.length) return cfg.outlets; }
-  }catch(e){}
-  return [];
-})();
+const PREDEFINED_OUTLETS = [
+  {id:233, number:'233', name:'Al Qusur'},
+  {id:260, number:'260', name:'Ras Tanura'},
+  {id:51,  number:'51',  name:'AlRakah AlShamaliyah'},
+  {id:56,  number:'56',  name:'AlAzizia'},
+  {id:82,  number:'82',  name:'AlAqrabia'}
+];
 const SUPER_ADMIN_ID   = '54122';
 const SUPER_ADMIN_CODE = 'SUPERADMIN2026';
 function isSuperAdmin(u){ var usr=u||state.currentUser; return !!(usr&&(usr.id===SUPER_ADMIN_ID||usr.role==='superadmin')); }
