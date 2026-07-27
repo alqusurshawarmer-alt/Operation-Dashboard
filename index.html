@@ -5054,7 +5054,12 @@ function renderEmployees(){
   document.getElementById('empCount').textContent=state.employees.length?`(${state.employees.length})`:'';
   grid.innerHTML=state.employees.length?state.employees.map((e,i)=>`<div class="emp-card"><div class="emp-avatar">${e.name[0].toUpperCase()}</div><div class="emp-name">${e.name}</div><div class="emp-pos">${e.pos||'—'}</div><div style="font-size:.74rem;color:var(--text3);margin-top:.4rem">ID: ${e.num}</div><div style="font-size:.74rem;color:var(--text3)">${e.company||'—'}</div><button class="btn btn-danger btn-sm" style="margin-top:.85rem;width:100%" onclick="deleteEmp(${i})">Remove</button></div>`).join(''):'<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text3)">👤 No employees found</div>';
 }
-function deleteEmp(i){state.employees.splice(i,1);renderEmployees();}
+function deleteEmp(i){
+  if(!confirm('Delete this employee?')) return;
+  state.employees.splice(i,1);
+  renderEmployees();
+  try{ fbSaveEmployees(); }catch(e){ console.error('Employee delete save error:',e); }
+}
 function openOutletModal(){document.getElementById('outletModal').classList.add('open');}
 function saveOutlet(){
   const name=document.getElementById('ol-name').value.trim(),num=document.getElementById('ol-num').value.trim();
@@ -9055,10 +9060,11 @@ function saveMaintToFirebase(){
 }
 
 function initMaintFilters(){
-  // Store dropdown
+  // Store dropdown — temporarily remove onchange to prevent infinite loop during rebuild
   const sel = document.getElementById('maintStoreFilter');
   if(sel){
     const cur = sel.value;
+    const prev=sel.onchange; sel.onchange=null;
     sel.innerHTML = '<option value="all">All Stores</option>';
     PREDEFINED_OUTLETS.forEach(o=>{
       const op = document.createElement('option');
@@ -9066,6 +9072,7 @@ function initMaintFilters(){
       if(String(o.id)===String(cur)) op.selected = true;
       sel.appendChild(op);
     });
+    sel.onchange=prev;
   }
   // Modal store dropdown
   const msel = document.getElementById('maintStore');
@@ -9320,9 +9327,11 @@ function maintOutletLabel(storeVal){
 }
 
 function initMaintFilters(){
+  // Store filter dropdown — temporarily remove onchange to prevent infinite loop during rebuild
   const sf=document.getElementById('maintStoreFilter');
   if(sf){
     const cur=sf.value;
+    const prev=sf.onchange; sf.onchange=null;
     sf.innerHTML='<option value="all">All Stores</option>';
     PREDEFINED_OUTLETS.forEach(o=>{
       const op=document.createElement('option');
@@ -9330,6 +9339,7 @@ function initMaintFilters(){
       if(String(o.id)===String(cur)) op.selected=true;
       sf.appendChild(op);
     });
+    sf.onchange=prev;
   }
   const mb=document.getElementById('maintStore');
   if(mb&&mb.options.length<=1){
