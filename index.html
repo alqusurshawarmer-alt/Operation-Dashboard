@@ -4562,12 +4562,15 @@ function saveAddSaleModal(){
   };
   closeAddSaleModal();
   if(yr===state.currentYear&&mo===state.currentMonth){recalc();renderDailyLog();}
+  // Save to Firebase immediately
+  try{ fbSaveOutletData(getOutletId()); }catch(e){ console.error('Sale save error:',e); }
 }
 function deleteSaleEntry(d){
   if(!confirm('Delete entry for day '+d+'?'))return;
   const key=`${state.currentYear}-${pad(state.currentMonth+1)}`;
   if(state.dailyData[key])delete state.dailyData[key][d];
   recalc();renderDailyLog();
+  try{ fbSaveOutletData(getOutletId()); }catch(e){ console.error('Sale delete save error:',e); }
 }
 function updateDaily(d,field,val){
   const key=`${state.currentYear}-${pad(state.currentMonth+1)}`;
@@ -5230,7 +5233,9 @@ function saveCogsEntry(){
   renderSavedDates();
   renderCogsHistory();
   renderTopVariance();
-  alert('✅ COGS entry saved for '+date);
+  // Save to Firebase
+  try{ fbSaveOutletData(getOutletId()); showToast('✅ COGS saved for '+date); }
+  catch(e){ alert('✅ COGS entry saved for '+date); }
 }
 
 function renderSavedDates(){
@@ -5530,7 +5535,11 @@ function saveCogsEntry(){
   populateCogsHistFilter();
   renderSavedDates();
   renderCogsHistory();
-  alert('✅ COGS entry saved for '+date);
+  // Save to Firebase
+  const cogsSel=document.getElementById('cogsOutletSelect');
+  const cogsOid=cogsSel&&cogsSel.value&&cogsSel.value!=='all'?(isNaN(cogsSel.value)?cogsSel.value:+cogsSel.value):getOutletId();
+  try{ fbSaveOutletData(cogsOid); showToast('✅ COGS saved for '+date); }
+  catch(e){ alert('✅ COGS entry saved for '+date); }
 }
 
 // Override loadCogsDate to use selected outlet store
@@ -12793,6 +12802,26 @@ window.updateDaily=function(d,field,val){
 const _origSaveKpi=window.saveKpi;
 window.saveKpi=function(){
   _origSaveKpi();fbSaveCurrentOutlet();
+};
+
+// Save sale modal — guaranteed Firebase save
+const _origSaveAddSaleModal=window.saveAddSaleModal;
+window.saveAddSaleModal=function(){
+  _origSaveAddSaleModal();
+  try{ fbSaveOutletData(getOutletId()); }catch(e){ console.error('Sale modal save error:',e); }
+};
+
+// Delete sale entry — guaranteed Firebase save
+const _origDeleteSaleEntry=window.deleteSaleEntry;
+window.deleteSaleEntry=function(d){
+  _origDeleteSaleEntry(d);
+  try{ fbSaveOutletData(getOutletId()); }catch(e){ console.error('Sale delete save error:',e); }
+};
+
+// Save COGS — guaranteed Firebase save
+const _origSaveCogsEntry=window.saveCogsEntry;
+window.saveCogsEntry=function(){
+  _origSaveCogsEntry();
 };
 
 // Save employees
