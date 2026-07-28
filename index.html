@@ -10214,27 +10214,37 @@ function renderChickenWaste(){
   const monthData=store[key]||{};
   const days=new Date(yr,mo+1,0).getDate();
 
-  // KPIs
+  // Filter outlets based on selected outlet in topbar
+  const selectedId=state.selectedOutlet==='all'?null:+state.selectedOutlet;
+  const visibleOutlets=selectedId?CW_OUTLETS.filter(o=>o.id===selectedId):CW_OUTLETS;
   let mtd=0,maxDay=0,maxDate='',outletTotals={};
-  CW_OUTLETS.forEach(o=>outletTotals[o.id]=0);
+  visibleOutlets.forEach(o=>outletTotals[o.id]=0);
   let daysWithData=0;
   for(let d=1;d<=days;d++){
     const dateStr=key+'-'+String(d).padStart(2,'0');
     const dayData=monthData[dateStr];
     if(!dayData) continue;
     let dayTotal=0;
-    CW_OUTLETS.forEach(o=>{ const kg=dayData[o.id]?.kg||0; dayTotal+=kg; outletTotals[o.id]+=kg; });
+    visibleOutlets.forEach(o=>{ const kg=dayData[o.id]?.kg||0; dayTotal+=kg; outletTotals[o.id]+=kg; });
     if(dayTotal>0){ mtd+=dayTotal; daysWithData++; if(dayTotal>maxDay){maxDay=dayTotal;maxDate=dateStr;} }
   }
-  const topOutlet=CW_OUTLETS.reduce((a,b)=>outletTotals[a.id]>=outletTotals[b.id]?a:b);
+  const topOutlet=visibleOutlets.reduce((a,b)=>(outletTotals[a.id]||0)>=(outletTotals[b.id]||0)?a:b,visibleOutlets[0]);
   document.getElementById('cw-kpi-mtd').textContent=mtd.toFixed(2)+' kg';
   document.getElementById('cw-kpi-avg').textContent=(daysWithData?mtd/daysWithData:0).toFixed(2)+' kg';
   document.getElementById('cw-kpi-max').textContent=maxDay?maxDay.toFixed(2)+' kg':'—';
   document.getElementById('cw-kpi-max-date').textContent=maxDate?new Date(maxDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
-  document.getElementById('cw-kpi-outlet').textContent=topOutlet.label;
-  document.getElementById('cw-kpi-outlet-kg').textContent=outletTotals[topOutlet.id].toFixed(2)+' kg MTD';
+  document.getElementById('cw-kpi-outlet').textContent=topOutlet?.label||'—';
+  document.getElementById('cw-kpi-outlet-kg').textContent=topOutlet?(outletTotals[topOutlet.id]||0).toFixed(2)+' kg MTD':'';
 
-  // Table
+  // Rebuild table headers for visible outlets only
+  const thead=document.querySelector('#cwTable thead tr');
+  if(thead){
+    thead.innerHTML=`<th style="padding:.65rem 1rem;text-align:left;font-size:.75rem;color:var(--text2);font-weight:800;text-transform:uppercase;white-space:nowrap;position:sticky;left:0;background:var(--warm);z-index:2">Date</th>`
+      +visibleOutlets.map(o=>`<th style="padding:.65rem .75rem;text-align:center;font-size:.75rem;color:var(--text2);font-weight:800;text-transform:uppercase">${o.label}</th>`).join('')
+      +`<th style="padding:.65rem .75rem;text-align:center;font-size:.75rem;color:var(--red);font-weight:800;text-transform:uppercase">Daily Total</th><th></th>`;
+  }
+
+  // Table rows
   const tbody=document.getElementById('cwTableBody');
   const tfoot=document.getElementById('cwTableFoot');
   let rows='';
@@ -10242,7 +10252,7 @@ function renderChickenWaste(){
     const dateStr=key+'-'+String(d).padStart(2,'0');
     const dayData=monthData[dateStr]||{};
     let dayTotal=0;
-    const cells=CW_OUTLETS.map(o=>{
+    const cells=visibleOutlets.map(o=>{
       const entry=dayData[o.id];
       const kg=entry?.kg||0;
       dayTotal+=kg;
@@ -10270,7 +10280,7 @@ function renderChickenWaste(){
   tbody.innerHTML=rows;
 
   // Totals row
-  const totalCells=CW_OUTLETS.map(o=>`<td style="text-align:center;font-weight:900;color:var(--red);padding:.65rem .75rem">${outletTotals[o.id].toFixed(2)}</td>`).join('');
+  const totalCells=visibleOutlets.map(o=>`<td style="text-align:center;font-weight:900;color:var(--red);padding:.65rem .75rem">${(outletTotals[o.id]||0).toFixed(2)}</td>`).join('');
   tfoot.innerHTML=`<tr style="background:var(--cream2);border-top:2.5px solid var(--red)">
     <td style="padding:.65rem 1rem;font-weight:900;font-size:.85rem;color:var(--text);position:sticky;left:0;background:var(--cream2)">MTD TOTAL</td>
     ${totalCells}
