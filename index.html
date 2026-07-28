@@ -3560,6 +3560,9 @@ function selectOutlet(id){
   try{renderSavedDates();}catch(e){}
   // renderCogsHistory removed (COGS history section deleted)
   try{renderTopVariance();}catch(e){}
+  // Re-render chicken wastage page if visible
+  const cwPage=document.getElementById('page-chickenwaste');
+  if(cwPage&&!cwPage.classList.contains('hidden')) try{renderChickenWaste();}catch(e){}
 }
 
 function showOutletBanner(){
