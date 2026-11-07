@@ -18262,7 +18262,7 @@ const WINV_ITEMS = [
   {sku:'W-Y-021',name:'SUMAK POWDER',                         cat:'DRY',fields:[{k:'cs',l:'CS',m:1,u:'kg'},{k:'kg',l:'kg',m:1,u:'kg'}],totalUnit:'kg'},
   // FROZEN (25)
   {sku:'W-F-001',name:'BASBOSA',                              cat:'FRZ',fields:[{k:'cs',l:'CS',m:96,u:'pcs'},{k:'inner',l:'Inner',m:24,u:'pcs'},{k:'pcs',l:'pcs',m:1,u:'pcs'}],totalUnit:'pcs'},
-  {sku:'W-F-002',name:'BEEF SOUS VIDE',                       cat:'FRZ',fields:[{k:'cs',l:'CS',m:1,u:'kg'},{k:'kg',l:'kg',m:1,u:'kg'}],totalUnit:'kg'},
+  {sku:'W-F-002',name:'BEEF SOUS VIDE',                       cat:'FRZ',fields:[{k:'cs',l:'CS',m:14.5,u:'kg'},{k:'inner',l:'Inner',m:0.145,u:'kg'},{k:'kg',l:'kg',m:1,u:'kg'}],totalUnit:'kg'},
   {sku:'W-F-003',name:'BREAD ARABIC FROZEN',                  cat:'FRZ',fields:[{k:'cs',l:'CS',m:100,u:'pcs'},{k:'inner',l:'Inner',m:10,u:'pcs'},{k:'pcs',l:'pcs',m:1,u:'pcs'}],totalUnit:'pcs'},
   {sku:'W-F-004',name:'BREAD GARSA -15',                      cat:'FRZ',fields:[{k:'cs',l:'CS',m:120,u:'pcs'},{k:'inner',l:'Inner',m:24,u:'pcs'},{k:'pcs',l:'pcs',m:1,u:'pcs'}],totalUnit:'pcs'},
   {sku:'W-F-005',name:'BREAD KETO',                           cat:'FRZ',fields:[{k:'cs',l:'CS',m:100,u:'pcs'},{k:'inner',l:'Inner',m:5,u:'pcs'},{k:'pcs',l:'pcs',m:1,u:'pcs'}],totalUnit:'pcs'},
@@ -18274,7 +18274,7 @@ const WINV_ITEMS = [
   {sku:'W-F-011',name:'CHEESE- MOZERELLA SHREDDED',           cat:'FRZ',fields:[{k:'cs',l:'CS',m:12,u:'kg'},{k:'inner',l:'Inner',m:2,u:'kg'},{k:'kg',l:'kg',m:1,u:'kg'}],totalUnit:'kg'},
   {sku:'W-F-012',name:'CHICKEN SHAWARMA',                     cat:'FRZ',type:'chicken',fields:[],totalUnit:'cones'},
   {sku:'W-F-013',name:'DOUGH SHEETS',                         cat:'FRZ',fields:[{k:'cs',l:'CS',m:360,u:'pcs'},{k:'inner',l:'Inner',m:15,u:'pcs'},{k:'pcs',l:'pcs',m:1,u:'pcs'}],totalUnit:'pcs'},
-  {sku:'W-F-014',name:'FALAFEL FROZEN',                       cat:'FRZ',fields:[{k:'cs',l:'CS',m:300,u:'pcs'},{k:'inner',l:'Inner',m:25,u:'pcs'},{k:'pcs',l:'pcs',m:1,u:'pcs'}],totalUnit:'pcs'},
+  {sku:'W-F-014',name:'FALAFEL FROZEN',                       cat:'FRZ',fields:[{k:'cs',l:'CS',m:300,u:'pcs'},{k:'inner',l:'Inner',m:30,u:'pcs'},{k:'pcs',l:'pcs',m:1,u:'pcs'}],totalUnit:'pcs'},
   {sku:'W-F-015',name:'FRENCH FRIES UNCOATED 10MM',           cat:'FRZ',fields:[{k:'cs',l:'CS',m:10,u:'kg'},{k:'inner',l:'Inner',m:2.5,u:'kg'},{k:'kg',l:'kg',m:1,u:'kg'}],totalUnit:'kg'},
   {sku:'W-F-016',name:'FRENCH FRIES 9MM',                     cat:'FRZ',fields:[{k:'cs',l:'CS',m:12.5,u:'kg'},{k:'inner',l:'Inner',m:2.5,u:'kg'},{k:'kg',l:'kg',m:1,u:'kg'}],totalUnit:'kg'},
   {sku:'W-F-017',name:'MOZZARELLA STICKS MINI',               cat:'FRZ',fields:[{k:'cs',l:'CS',m:350,u:'pcs'},{k:'inner',l:'Packet',m:60,u:'pcs'},{k:'pcs',l:'pcs',m:1,u:'pcs'}],totalUnit:'pcs'},
@@ -18819,11 +18819,13 @@ function _loadWeeklyInvCount(dateStr){
   var _db=window.db||window._fbDb;
   if(!_db){_buildWeeklyInvForm(null);return;}
   var loadPath=_winvDbPath(dateStr);
+  _winvLoading=true; // block periodic/auto-save while loading
   _winvSetSaveStatus('saving','⏳ Loading from cloud…');
   console.log('[winv] Loading path:',loadPath,'date:',dateStr);
 
   var _doRead=function(){
     _db.ref(loadPath).once('value').then(function(snap){
+      _winvLoading=false; // allow saves after load completes
       if(snap.exists()){
         var sv=snap.val();
         var cloudItems=sv.items||null;
@@ -18847,11 +18849,13 @@ function _loadWeeklyInvCount(dateStr){
           _winvStatus('☁️ Cloud record exists but has no items — try saving again','#fff3cd','#856404',8000);
         }
       } else {
+        _winvLoading=false;
         _buildWeeklyInvForm(null);
         _winvSetSaveStatus('pending','No saved data for this date');
         console.log('[winv] No data at',loadPath);
       }
     }).catch(function(e){
+      _winvLoading=false;
       console.error('[winv] load error',e);
       _buildWeeklyInvForm(null);
       _winvSetSaveStatus('error','❌ Load failed: '+e.message);
@@ -18860,7 +18864,7 @@ function _loadWeeklyInvCount(dateStr){
 
   // Ensure authenticated before reading
   if(window._ensureAuth){
-    window._ensureAuth().then(_doRead).catch(function(){_doRead();});
+    window._ensureAuth().then(_doRead).catch(function(){_winvLoading=false;_doRead();});
   } else {
     _doRead();
   }
